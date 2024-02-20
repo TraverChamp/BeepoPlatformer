@@ -18,14 +18,15 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    
+
 
     // Update is called once per frame
     void Update()
     {
         _xMoveInput = Input.GetAxis("Horizontal") * xSpeed;
-        if (Input.GetKeyDown(KeyCode.Space)) {
-        shouldJump = true;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            shouldJump = true;
         }
     }
     private void FixedUpdate()
@@ -33,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         Collider2D col = Physics2D.OverlapCircle(transform.position, groundCheckRadius, groundLayer);
         _rb.velocity = new Vector2(_xMoveInput, _rb.velocity.y);
         bool isGrounded = col != null;
-        if (shouldJump )
+        if (shouldJump)
         {
             if (isGrounded)
             {
@@ -46,5 +47,19 @@ public class PlayerMovement : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, groundCheckRadius);
+    }
+    private void OnCollisionEnter2D(UnityEngine.Collision2D other)
+    {
+        if (other.gameObject.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(other.transform, true);
+        }
+    }
+    private void OnCollisionExit2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("MovingPlatform"))
+        {
+            transform.SetParent(null, true);
+        }
     }
 }
